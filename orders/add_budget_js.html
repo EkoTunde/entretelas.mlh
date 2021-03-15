@@ -1,0 +1,120 @@
+<script>
+    $(document).ready(function () {
+        var nextClientId;
+        var nextBudgetId;
+        var search_items;
+        var clients;
+
+        $(function () {
+            $("#pb").hide();
+            $("#loading").show();
+            $("#main").hide();
+            $('#search-person').autocomplete({
+                data: { "Cargando": null }
+            });
+            fetchNextClientId();
+        });
+
+        function fetchNextClientId() {
+            google.script.run.withSuccessHandler(setNextClientId).getNextClientId();
+        }
+
+        function setNextClientId(data) {
+            nextClientId = data;
+            $('#btn_gen_id').click(function () {
+                $("#person-id").val(nextClientId);
+                M.updateTextFields();
+            });
+            fetchNextBudgetId();
+        }
+
+        function fetchNextBudgetId() {
+            google.script.run.withSuccessHandler(setNextBudgetId).getNextBudgetId();
+        }
+
+        function setNextBudgetId(data) {
+            nextBudgetId = data;
+            $('#btn_gen_id').click(function () {
+                $("#person-id").val(nextClientId);
+                M.updateTextFields();
+            });
+            $("#loading").hide();
+            $("#main").show();
+            fetchSearchData();
+        }
+
+        function fetchSearchData() {
+            google.script.run.withSuccessHandler(setSearchData).getSearchData();
+        }
+
+        function setSearchData(data) {
+            search_items = data.search_items;
+            $('#search-person').autocomplete({
+                data: search_items
+            });
+            clients = data.clients;
+            initLoadClientButton();
+        }
+
+        function initLoadClientButton() {
+            $("#btn_load_client").click(function () {
+                var selected = $("#search-person").val();
+                if (selected === "") {
+                    alert("No se seleccionó ninguna persona.")
+                } else {
+                    $("#person-id").val(clients[selected].id);
+                    $("#first-name").val(clients[selected].first_name);
+                    $("#last-name").val(clients[selected].last_name);
+                    $("#adress").val(clients[selected].adress);
+                    $("#zip-code").val(clients[selected].zip);
+                    $("#city").val(clients[selected].city);
+                    $("#state").val(clients[selected].state);
+                    $("#email").val(clients[selected].email);
+                    $("#phone").val(clients[selected].phone);
+                    M.updateTextFields();
+                }
+            });
+        }
+
+        $('#state').autocomplete({
+            data: {
+                "Buenos Aires": null, "Catamarca": null, "Chaco": null, "Chubut": null, "Córdoba": null, "Corrientes": null, "Entre Ríos": null, "Formosa": null, "Jujuy": null,
+                "La Pampa": null, "La Rioja": null, "Mendoza": null, "Misiones": null, "Neuquén": null, "Río Negro": null, "Salta": null, "San Juan": null, "San Luis": null,
+                "Santa Cruz": null, "Santa Fe": null, "Santiago del Estero": null, "Tierra del Fuego, Antártida e Isla del Atlántico Sur": null, "Tucumán": null,
+            },
+        });
+
+        $('#btn_send').click(function () {
+            var client = getClient();
+            if (client.id === "" || client.first_name === "" || client.last_name === "" || client.order === "") {
+                alert("Chequeá que los campos requeridos estén completos");
+            } else {
+                $("#pb").show();
+                var new_order = {
+                    client: getClient(),
+                    order: $("#new-order").val().trim(),
+                    timestamp: (new Date()).getTime(),
+                    budgetId: nextBudgetId,
+                    finalizado: 'NO',
+                    search_data_clients: clients
+                };
+                google.script.run.withSuccessHandler(google.script.host.close).saveNewOrder(new_order);
+            }
+        });
+
+        function getClient() {
+            return {
+                id: $("#person-id").val().trim(),
+                first_name: $("#first-name").val().trim(),
+                last_name: $("#last-name").val().trim(),
+                adress: $("#adress").val().trim(),
+                zip: $("#zip-code").val().trim(),
+                city: $("#city").val().trim(),
+                state: $("#state").val().trim(),
+                email: $("#email").val().trim(),
+                phone: $("#phone").val().trim(),
+            };
+        }
+
+    });
+</script>

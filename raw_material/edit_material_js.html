@@ -1,0 +1,35 @@
+<script>
+    $(document).ready(function () {
+
+        $(function () {
+            $('#loading').show();
+            $("#main").hide();
+            $("#pb").hide();
+            google.script.run.withSuccessHandler(setSelectedItem).getSelectedItem();
+        });
+
+
+        var selectedItem;
+
+        function setSelectedItem(data) {
+            $('#loading').hide();
+            selectedItem = data;
+            $('#name').val(data.name);
+            $('#amount').val(data.amount);
+            M.updateTextFields();
+            $("#main").show();
+        }
+
+        $('#btn_save').click(function () {
+            $('#pb').show();
+            google.script.run.withSuccessHandler(google.script.host.close).save(getData());
+        });
+
+        function getData() {
+            var name = $('#name').val();
+            var amount = Number($('#amount').val()).toLocaleString('es-AR', { minimumFractionDigits: 2 });
+            return [name, amount];
+        }
+
+    });
+</script>

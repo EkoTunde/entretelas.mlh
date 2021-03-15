@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <style>
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
+
+        img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .image {
+            flex-basis: 15%;
+        }
+
+        .text {
+            padding-left: 20px;
+            font-weight: bold;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h2>Tu presupuesto de Entretelas está listo!</h2>
+        <p>Hola
+            <?= client_name ?>,
+        </p>
+        <p>Te enviamos adjunto tu presupuesto N.°
+            <?= budget_id ?>.
+        </p>
+        <p>Recordá que el mismo tiene validez por 15 días, hasta el
+            <?= budget_expiration ?>.
+        </p>
+        <p>Podés confirmarlo respondiendo este e-mail con el asunto "CONFIRMO" o por WhatsApp al +54 11 5972-2765. Una
+            vez
+            confirmado, se abona una seña del 50% por confección y el total de los materiales.</p>
+
+        <p>Saludos,</p>
+
+    </div>
+    <div class="container">
+        <div class="image">
+            <img src='cid:entretelasLogo'>
+        </div>
+        <div class="text">
+            Entretelas MLH<br>
+            Bella Vista, Buenos Aires<br>
+            +54 11 5972-2765<br>
+            entretelas.mlh@gmail.com<br>
+        </div>
+    </div>
+</body>
+
+</html>

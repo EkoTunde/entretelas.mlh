@@ -1,0 +1,54 @@
+<script>
+    $(document).ready(function () {
+
+        $(function () {
+            $("#pb").hide();
+            loading();
+            google.script.run.withSuccessHandler(setClientData).getClientData();
+        });
+
+        function setClientData(data) {
+            $("#person-id").val(data.id);
+            $("#first-name").val(data.first);
+            $("#last-name").val(data.last);
+            $("#adress").val(data.adress);
+            $("#zip-code").val(data.zip);
+            $("#city").val(data.city);
+            $("#state").val(data.state);
+            $("#email").val(data.email);
+            $("#phone").val(data.phone);
+            notLoading();
+        }
+
+        function loading() {
+            $('#loading').show();
+            $('#main').hide();
+        }
+
+        function notLoading() {
+            $('#loading').hide();
+            $('#main').show();
+            M.updateTextFields();
+        }
+
+        $("#btn_save").click(function () {
+            $("#pb").show();
+            google.script.run.withSuccessHandler(google.script.host.close).save(getData());
+        });
+
+        function getData() {
+            return [
+                $("#person-id").val(),
+                $("#last-name").val(),
+                $("#first-name").val(),
+                $("#adress").val(),
+                $("#zip-code").val(),
+                $("#city").val(),
+                $("#state").val(),
+                $("#email").val(),
+                $("#phone").val()
+            ];
+        }
+    });
+
+</script>

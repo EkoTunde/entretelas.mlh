@@ -1,0 +1,36 @@
+<script>
+    $(document).ready(function () {
+        var id;
+
+        $(function () {
+
+            $('#date').datepicker({ defaultDate: new Date(), format: 'dd/mm/yyyy', setDefaultDate: true });
+            $("#pb").hide();
+            $("#loading").show();
+            $("#main").hide();
+            google.script.run.withSuccessHandler(setId).getBudgetIdForPayment();
+        });
+
+        function setId(data) {
+            id = data;
+            $("#loading").hide();
+            $("#main").show();
+            //$("#date").val(Utilities.formatDate(new Date(), "GMT-3", "dd/MM/yyyy").toString());
+        }
+
+        $("#btn_save").click(function () {
+            var amount = $("#amount").val().replace(",", ".");
+            var date = $('#date').val(); //.datepicker({ dateFormat: 'dd/MM/yyyy' })
+            //var date = Utilities.formatDate(new Date($('#date').val()), "GMT-3", "dd/MM/yyyy").toString();
+            if (amount == "") {
+                alert("Ingresá un importe válido");
+            } else if (date == "") {
+                alert("Ingresá una fecha válida");
+            } else {
+                $("#pb").show();
+                google.script.run.withSuccessHandler(google.script.host.close).savePayment(id, amount, date);
+            }
+        });
+
+    });
+</script>

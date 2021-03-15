@@ -1,0 +1,154 @@
+<script>
+    $(document).ready(function () {
+        var materials;
+        var templates;
+        var costs;
+
+        $(function () {
+            loading();
+            notSaving();
+            $('.mult').val("Nada");
+            $('.factor').val(1);
+            $('.tolerance').val(0);
+            $('#item_manuf').val("Sin costo");
+            $('#height').val(0);
+            $('#width').val(0);
+            $('#perimeter').val(0);
+            $('#amount').val(toMoney(0));
+            $('#quantity').val(1);
+            $('#total').val(toMoney(0));
+            fetchMaterials();
+        });
+
+        $("#btn_save").click(function () {
+            save();
+        });
+
+        function fetchMaterials() {
+            google.script.run.withSuccessHandler(setMaterials).getMaterials();
+        }
+
+        function setMaterials(data) {
+            materials = data;
+            var sorted_materials = Object.keys(materials);
+            sorted_materials.sort();
+            var items = [1, 2, 3];
+            for (var i = 0; i < 3; i++) {
+                setMaterialForItem(sorted_materials, items[i]);
+            }
+            fetchTemplatesNames();
+        }
+
+        function setMaterialForItem(materials, nro) {
+            var item = $('#item_' + nro);
+            item.empty();
+            item.append("<option value=\"" + "Elegir" + "\">" + "Elegir" + '</option>');
+            for (var i = 0; i < materials.length; i++) {
+                item.append("<option value=\"" + materials[i] + "\">" + materials[i] + '</option>');
+            }
+        }
+
+        function fetchTemplatesNames() {
+            google.script.run.withSuccessHandler(setTemplates).getTemplates();
+        }
+
+        function setTemplates(data) {
+            templates = data;
+            fetchCosts();
+        }
+
+        function fetchCosts() {
+            google.script.run.withSuccessHandler(setCosts).getManufactureCosts();
+        }
+
+        function setCosts(data) {
+            costs = data;
+            var sorted_costs = Object.keys(costs);
+            sorted_costs.sort();
+            var item = $('#item_manuf');
+            item.empty();
+            item.append("<option value=\"" + "Elegir" + "\">" + "Elegir" + '</option>');
+            for (var i = 0; i < sorted_costs.length; i++) {
+                item.append("<option value=\"" + sorted_costs[i] + "\">" + sorted_costs[i] + '</option>');
+            }
+            notLoading();
+        }
+
+        function getComponentAmount(measures, nro, manuf) {
+            var name = $('#item_' + nro).val();
+            if (name == "Elegir") return 0;
+            var material = manuf ? costs[name] : materials[name];
+            var mult_by = $('#mult_' + nro).val();
+            if (mult_by == "Nada") return material * 1;
+            var factor = $('#factor_' + nro).val().trim() == "" ? 1 : Number($('#factor_' + nro).val().trim());
+            var measure = measures[mult_by] == "" ? 0 : measures[mult_by];
+            if (factor == 1) return material * measure;
+            var tolerance = $('#tolerance_' + nro).val().trim() == "" ? 0 : Number($('#tolerance_' + nro).val().trim());
+            var times_it_fits = parseInt(measure / factor);
+            return material * (measure - (times_it_fits * factor) > tolerance ? times_it_fits + 1 : times_it_fits);
+        }
+
+        function loading() {
+            $('#loading').show();
+            $('#main').hide();
+        }
+
+        function notLoading() {
+            $('#loading').hide();
+            $('#main').show();
+        }
+
+        function saving() {
+            $('#saving').show();
+        }
+
+        function notSaving() {
+            $('#saving').hide();
+        }
+
+        function save() {
+            saving();
+            var name = $('#name').val();
+            if (templates.includes(name)) {
+                alert("Ya existe una plantilla con ese nombre");
+                notSaving();
+                return;
+            } else if ($('#name').val() == "") {
+                alert("Ingresá un nombre válido, al menos un componente y la confección.");
+                notSaving();
+                return;
+            } else {
+                saving();
+                google.script.run.withSuccessHandler(google.script.host.close).add(getDataForTemplate(name));
+            }
+        }
+
+        function getDataForTemplate(name) {
+            var item_1 = $('#item_1').val() == "Elegir" ? "" : $('#item_1').val();
+            var mult_1 = $('#mult_1').val() == "Elegir" ? "" : $('#mult_1').val();
+            var factor_1 = $('#factor_1').val() == "" ? 1 : Number($('#factor_1').val());
+            var tolerance_1 = $('#tolerance_1').val() == "" ? 0 : Number($('#tolerance_1').val());
+            var item_2 = $('#item_2').val() == "Elegir" ? "" : $('#item_2').val();
+            var mult_2 = $('#mult_2').val() == "Elegir" ? "" : $('#mult_2').val();
+            var factor_2 = $('#factor_2').val() == "" ? 1 : Number($('#factor_2').val());
+            var tolerance_2 = $('#tolerance_2').val() == "" ? 0 : Number($('#tolerance_2').val());
+            var item_3 = $('#item_3').val() == "Elegir" ? "" : $('#item_3').val();
+            var mult_3 = $('#mult_3').val() == "Elegir" ? "" : $('#mult_3').val();
+            var factor_3 = $('#factor_3').val() == "" ? 1 : Number($('#factor_3').val());
+            var tolerance_3 = $('#tolerance_3').val() == "" ? 0 : Number($('#tolerance_3').val());
+            var item_manuf = $('#item_manuf').val() == "Elegir" ? "" : $('#item_manuf').val();
+            var mult_manuf = $('#mult_manuf').val() == "Elegir" ? "" : $('#mult_manuf').val();
+            var factor_manuf = $('#factor_manuf').val() == "" ? 1 : Number($('#factor_manuf').val());
+            var tolerance_manuf = $('#tolerance_manuf').val() == "" ? 0 : Number($('#tolerance_manuf').val());
+            return [name,
+                item_1, mult_1, factor_1, tolerance_1,
+                item_2, mult_2, factor_2, tolerance_2,
+                item_3, mult_3, factor_3, tolerance_3,
+                item_manuf, mult_manuf, factor_manuf, tolerance_manuf];
+        }
+
+        function toMoney(num) {
+            return "$ " + Number(num).toLocaleString('es-ES', { minimumFractionDigits: 2 });
+        }
+    });
+</script>

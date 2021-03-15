@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <?!= include('page_add_item_css'); ?>
+</head>
+
+<body>
+
+    <div id="loading" class="container">
+        <div class="row">
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main" class="container">
+
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">label</i>
+                <input id="name" type="text" class="validate">
+                <label class="active" for="name">Nombre del producto</label>
+            </div>
+        </div>
+
+        <div class="part">
+
+            <div class="row section">
+                <h6 class="section_title">Componentes</h6>
+            </div>
+
+            <div class="row" id="comp_1">
+                <div class="col s2">
+                    <p class="flow-text component">Comp.1</p>
+                </div>
+                <div class="col s3">
+                    <label class="active">Materia prima</label>
+                    <select id="item_1" class="browser-default changeable-select item">
+                    </select>
+                </div>
+                <div class="col s3">
+                    <label class="active">Multiplica por</label>
+                    <select id="mult_1" class="browser-default changeable-select mult">
+                        <option value="Nada">Nada</option>
+                        <option value="Ancho">Ancho</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Perímetro">Perímetro</option>
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input id="factor_1" type="number" min="1.0" step=".1" class="validate changeable factor">
+                    <label class="active" for="factor_1">Factor</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="tolerance_1" type="number" min="0.0" step=".05" class="validate changeable tolerance">
+                    <label class="active" for="tolerance_1">Tolerancia</label>
+                </div>
+            </div>
+
+            <div class="row" id="comp_2">
+                <div class="col s2">
+                    <p class="flow-text component">Comp.2</p>
+                </div>
+                <div class="col s3">
+                    <label class="active">Materia prima</label>
+                    <select id="item_2" class="browser-default changeable-select item">
+                    </select>
+                </div>
+                <div class="col s3">
+                    <label class="active">Multiplica por</label>
+                    <select id="mult_2" class="browser-default changeable-select mult">
+                        <option value="Nada">Nada</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Ancho">Ancho</option>
+                        <option value="Perímetro">Perímetro</option>
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input id="factor_2" type="number" min="1.0" step=".1" class="validate changeable factor">
+                    <label class="active" for="factor_2">Factor</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="tolerance_2" type="number" min="0.0" step=".05" class="validate changeable tolerance">
+                    <label class="active" for="tolerance_2">Tolerancia</label>
+                </div>
+            </div>
+
+            <div class="row" id="comp_3">
+                <div class="col s2">
+                    <p class="flow-text component">Comp.3</p>
+                </div>
+                <div class="col s3">
+                    <label class="active">Materia prima</label>
+                    <select id="item_3" class="browser-default changeable-select item">
+                    </select>
+                </div>
+                <div class="col s3">
+                    <label class="active">Multiplica por</label>
+                    <select id="mult_3" class="browser-default changeable-select mult">
+                        <option value="Nada">Nada</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Ancho">Ancho</option>
+                        <option value="Perímetro">Perímetro</option>
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input id="factor_3" type="number" min="1.0" step=".1" class="validate changeable factor">
+                    <label class="active" for="factor_3">Factor</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="tolerance_3" type="number" min="0.0" step=".05" class="validate changeable tolerance">
+                    <label class="active" for="tolerance_3">Tolerancia</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="part">
+            <div class="row section">
+                <h6 class="section_title">Confección</h6>
+            </div>
+            <div class="row" id="manuf">
+                <div class="col s4">
+                    <label class="active">Categoría</label>
+                    <select id="item_manuf" class="browser-default changeable-select item">
+                    </select>
+                </div>
+                <div class="col s4">
+                    <label class="active">Multiplica por</label>
+                    <select id="mult_manuf" class="browser-default changeable-select mult">
+                        <option value="Nada">Nada</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Ancho">Ancho</option>
+                        <option value="Perímetro">Perímetro</option>
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input id="factor_manuf" type="number" min="1.0" step=".1" class="validate changeable factor">
+                    <label class="active" for="factor_manuf">Factor</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="tolerance_manuf" type="number" min="0.0" step=".05"
+                        class="validate changeable tolerance">
+                    <label class="active" for="tolerance_manuf">Tolerancia</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <button style="display: inline;" class="btn waves-effect waves-light" type="submit" name="action"
+                id="btn_save">Guardar<i class="material-icons right">save</i>
+            </button>
+        </div>
+
+        <div class="row">
+            <div id="saving" class="progress">
+                <div class="indeterminate"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <?!= include('page_add_item_js'); ?>
+    <script>
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

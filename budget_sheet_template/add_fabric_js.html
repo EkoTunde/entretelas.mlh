@@ -1,0 +1,45 @@
+<script>
+    $(document).ready(function () {
+
+        $(function () {
+            $('#pb').hide();
+        });
+
+        $(".changeable").on('change', function () {
+            recalc();
+        });
+
+        $(".changeable").keyup(function () {
+            recalc();
+        });
+
+        $('#btn_add_to_cart').click(function () {
+            var fabric = getData();
+            for (var i = 0; i < 4; i++) {
+                if (fabric[i] === "" || fabric[i] === 0) {
+                    alert("Todos los campos son obligatorios.");
+                    return;
+                }
+            }
+            $('#pb').show();
+            google.script.run.withSuccessHandler(google.script.host.close).addProduct(fabric);
+        });
+
+        function recalc() {
+            var price = Number($("#price").val().replace(",", "."));
+            var quantity = Number($("#quantity").val().replace(",", "."));
+            var total = "$ " + (price * quantity).toLocaleString('es-AR', { minimumFractionDigits: 2 });
+            $("#total").val(total);
+            M.updateTextFields();
+        }
+
+        function getData() {
+            var name = $("#name").val();
+            var price = Number($("#price").val().replace(",", "."));
+            var quantity = Number($("#quantity").val().replace(",", "."));
+            var total = $("#total").val();
+            return [name, price, quantity, total];
+        }
+
+    });
+</script>

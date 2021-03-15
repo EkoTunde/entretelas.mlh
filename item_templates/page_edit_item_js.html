@@ -1,0 +1,151 @@
+<script>
+    $(document).ready(function () {
+        var materials;
+        var costs;
+        var templateData;
+
+        $(function () {
+            loading();
+            notSaving();
+            $('.mult').val("Nada");
+            $('.factor').val(1);
+            $('.tolerance').val(0);
+            $('#item_manuf').val("Sin costo");
+            $('#height').val(0);
+            $('#width').val(0);
+            $('#perimeter').val(0);
+            $('#amount').val(toMoney(0));
+            $('#quantity').val(1);
+            $('#total').val(toMoney(0));
+            fetchMaterials();
+        });
+
+        function fetchMaterials() {
+            google.script.run.withSuccessHandler(setMaterials).getMaterials();
+        }
+
+        function setMaterials(data) {
+            materials = data;
+            var sorted_materials = Object.keys(materials);
+            sorted_materials.sort();
+            var items = [1, 2, 3];
+            for (var i = 0; i < 3; i++) {
+                setMaterialForItem(sorted_materials, items[i]);
+            }
+            fetchCosts();
+        }
+
+        function setMaterialForItem(materials, nro) {
+            var item = $('#item_' + nro);
+            item.empty();
+            item.append("<option value=\"" + "Elegir" + "\">" + "Elegir" + '</option>');
+            for (var i = 0; i < materials.length; i++) {
+                item.append("<option value=\"" + materials[i] + "\">" + materials[i] + '</option>');
+            }
+        }
+
+        function fetchCosts() {
+            google.script.run.withSuccessHandler(setCosts).getManufactureCosts();
+        }
+
+        function setCosts(data) {
+            costs = data;
+            var sorted_costs = Object.keys(costs);
+            sorted_costs.sort();
+            var item = $('#item_manuf');
+            item.empty();
+            item.append("<option value=\"" + "Elegir" + "\">" + "Elegir" + '</option>');
+            for (var i = 0; i < sorted_costs.length; i++) {
+                item.append("<option value=\"" + sorted_costs[i] + "\">" + sorted_costs[i] + '</option>');
+            }
+            fetchTemplateName();
+        }
+
+        function fetchTemplateName() {
+            google.script.run.withSuccessHandler(fetchTemplate).getSelectedItemName();
+        }
+
+        function fetchTemplate(name) {
+            google.script.run.withSuccessHandler(setTemplateData).getTemplateData(name);
+        }
+
+        function setTemplateData(template) {
+            $('#name').val(template.name);
+            $('#item_1').val(template.item_1);
+            $('#mult_1').val(template.mult_1);
+            $('#factor_1').val(template.factor_1);
+            $('#tolerance_1').val(template.tolerance_1);
+            $('#item_2').val(template.item_2);
+            $('#mult_2').val(template.mult_2);
+            $('#factor_2').val(template.factor_2);
+            $('#tolerance_2').val(template.tolerance_2);
+            $('#item_3').val(template.item_3);
+            $('#mult_3').val(template.mult_3);
+            $('#factor_3').val(template.factor_3);
+            $('#tolerance_3').val(template.tolerance_3);
+            $('#item_manuf').val(template.item_manuf);
+            $('#mult_manuf').val(template.mult_manuf);
+            $('#factor_manuf').val(template.factor_manuf);
+            $('#tolerance_manuf').val(template.tolerance_manuf);
+            $('#autocomplete_template').val("");
+            notLoading();
+        }
+
+        $("#btn_save").click(function () {
+            save();
+        });
+
+        function loading() {
+            $('#loading').show();
+            $('#main').hide();
+        }
+
+        function notLoading() {
+            $('#loading').hide();
+            $('#main').show();
+            M.updateTextFields();
+        }
+
+        function saving() {
+            $('#saving').show();
+        }
+
+        function notSaving() {
+            $('#saving').hide();
+        }
+
+        function save() {
+            var name = $('#name').val();
+            saving();
+            google.script.run.withSuccessHandler(google.script.host.close).save(getDataForTemplate(name));
+        }
+
+        function getDataForTemplate(name) {
+            var item_1 = $('#item_1').val() == "Elegir" ? "" : $('#item_1').val();
+            var mult_1 = $('#mult_1').val() == "Elegir" ? "" : $('#mult_1').val();
+            var factor_1 = $('#factor_1').val() == "" ? 1 : Number($('#factor_1').val());
+            var tolerance_1 = $('#tolerance_1').val() == "" ? 0 : Number($('#tolerance_1').val());
+            var item_2 = $('#item_2').val() == "Elegir" ? "" : $('#item_2').val();
+            var mult_2 = $('#mult_2').val() == "Elegir" ? "" : $('#mult_2').val();
+            var factor_2 = $('#factor_2').val() == "" ? 1 : Number($('#factor_2').val());
+            var tolerance_2 = $('#tolerance_2').val() == "" ? 0 : Number($('#tolerance_2').val());
+            var item_3 = $('#item_3').val() == "Elegir" ? "" : $('#item_3').val();
+            var mult_3 = $('#mult_3').val() == "Elegir" ? "" : $('#mult_3').val();
+            var factor_3 = $('#factor_3').val() == "" ? 1 : Number($('#factor_3').val());
+            var tolerance_3 = $('#tolerance_3').val() == "" ? 0 : Number($('#tolerance_3').val());
+            var item_manuf = $('#item_manuf').val() == "Elegir" ? "" : $('#item_manuf').val();
+            var mult_manuf = $('#mult_manuf').val() == "Elegir" ? "" : $('#mult_manuf').val();
+            var factor_manuf = $('#factor_manuf').val() == "" ? 1 : Number($('#factor_manuf').val());
+            var tolerance_manuf = $('#tolerance_manuf').val() == "" ? 0 : Number($('#tolerance_manuf').val());
+            return [name,
+                item_1, mult_1, factor_1, tolerance_1,
+                item_2, mult_2, factor_2, tolerance_2,
+                item_3, mult_3, factor_3, tolerance_3,
+                item_manuf, mult_manuf, factor_manuf, tolerance_manuf];
+        }
+
+        function toMoney(num) {
+            return "$ " + Number(num).toLocaleString('es-ES', { minimumFractionDigits: 2 });
+        }
+    });
+</script>

@@ -1,0 +1,36 @@
+<script>
+	$(document).ready(function() {
+    
+    var names;
+
+    $(function() {
+      $("#pb").hide();
+      $("#loading").show();
+      $("#main").hide();
+      google.script.run.withSuccessHandler(setNames).getNames();
+    });
+
+    function setNames(data) {
+      names = data;
+      $('#loading').hide();
+      $("#main").show();
+    }
+
+    $('#btn_save').click(function() {
+      var data = getData();
+      if (names.includes(data[0])) {
+        alert("Ya existe un costo de confección con ese mismo nombre.");
+        return;
+      }
+      $('#pb').show();
+      google.script.run.withSuccessHandler(google.script.host.close).add(data);
+    });
+
+    function getData() {
+      var name = $('#name').val();
+      var amount = Number($('#amount').val()).toLocaleString('es-AR', { minimumFractionDigits: 2 });
+      return [name,amount];
+    }
+
+  });
+</script>
